@@ -46,7 +46,7 @@ func (this *BlockController) Get() {
 
 	this.Ctx.WriteString("<html>")
 	if block != nil {
-		this.Ctx.WriteString(block.PrintHTML(false))
+		this.Ctx.WriteString(block.PrintHTML(true))
 	} else {
 		this.Ctx.WriteString("No such Block")
 	}
