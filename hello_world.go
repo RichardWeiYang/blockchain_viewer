@@ -145,7 +145,7 @@ func (this *WalletController) Post() {
 	UTXOSet.Update(newBlock)
 
 	this.Ctx.WriteString("Succeed!</br></body></html>")
-	this.Ctx.WriteString("Go back to <a href=\"/\">Home</a> to see your block</body></html>")
+	this.Ctx.WriteString(fmt.Sprintf("New block created <a href=\"/block/%x\">%x</a> to see your block</body></html>", newBlock.Hash, newBlock.Hash))
 }
 
 func main() {
