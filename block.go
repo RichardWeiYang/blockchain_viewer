@@ -83,6 +83,11 @@ func (b *Block) PrintHTML(detail bool) string {
 	lines = append(lines, fmt.Sprintf("Created at : %s</br>", time.Unix(b.Timestamp, 0)))
 	pow := NewProofOfWork(b)
 	lines = append(lines, fmt.Sprintf("PoW: %s</br></br>", strconv.FormatBool(pow.Validate())))
+	if detail {
+		for _, tx := range b.Transactions {
+			lines = append(lines, tx.PrintHTML())
+		}
+	}
 	lines = append(lines, fmt.Sprintf("</br></br>"))
 	return strings.Join(lines, "\n")
 }
