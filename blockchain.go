@@ -8,6 +8,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -357,4 +360,30 @@ func dbExists(dbFile string) bool {
 	}
 
 	return true
+}
+
+func (bc *Blockchain) Print() string {
+	var lines []string
+	bci := bc.Iterator()
+
+	for {
+		block := bci.Next()
+
+		lines = append(lines, fmt.Sprintf("============ Block %x ============\n", block.Hash))
+		lines = append(lines, fmt.Sprintf("Height: %d\n", block.Height))
+		lines = append(lines, fmt.Sprintf("Prev. block: %x\n", block.PrevBlockHash))
+		lines = append(lines, fmt.Sprintf("Created at : %s\n", time.Unix(block.Timestamp, 0)))
+		pow := NewProofOfWork(block)
+		lines = append(lines, fmt.Sprintf("PoW: %s\n\n", strconv.FormatBool(pow.Validate())))
+		for _, tx := range block.Transactions {
+			lines = append(lines, fmt.Sprintf("%s", tx))
+		}
+		lines = append(lines, fmt.Sprintf("\n\n"))
+
+		if len(block.PrevBlockHash) == 0 {
+			break
+		}
+	}
+	return strings.Join(lines, "\n")
+
 }

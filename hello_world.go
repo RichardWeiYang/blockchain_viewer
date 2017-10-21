@@ -9,7 +9,10 @@ type MainController struct {
 }
 
 func (this *MainController) Get() {
-	this.Ctx.WriteString("hello world")
+	bc := NewBlockchain("3000")
+	defer bc.db.Close()
+
+	this.Ctx.WriteString(bc.Print())
 }
 
 func main() {
