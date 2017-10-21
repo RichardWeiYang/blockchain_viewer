@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/astaxie/beego"
 )
@@ -53,9 +54,33 @@ func (this *BlockController) Get() {
 	this.Ctx.WriteString("</html>")
 }
 
+type WalletsController struct {
+	beego.Controller
+}
+
+func (this *WalletsController) Get() {
+	wallets, err := NewWallets("3000")
+	addresses := wallets.GetAddresses()
+	bc := NewBlockchain("3000")
+	defer bc.db.Close()
+
+	if err != nil {
+		this.Ctx.WriteString("<html><body>Invalid Wallet</body></html>")
+	}
+
+	this.Ctx.WriteString("<html><body><table border=\"1\"><tr> <td>Address</td> <td>Balance</td> </tr>")
+	for _, address := range addresses {
+		var lines []string
+		lines = append(lines, fmt.Sprintf("<tr><td><a href=\"/wallet/%s\">%s</a></td>", address, address))
+		lines = append(lines, fmt.Sprintf("<td>%d</td></tr>", bc.getBalance(address)))
+		this.Ctx.WriteString(strings.Join(lines, ""))
+	}
+	this.Ctx.WriteString("</table></body></html>")
+}
+
 func main() {
 	beego.Router("/", &MainController{})
 	beego.Router("/block/:id", &BlockController{})
-	//beego.Router("/blockchain", &BlockChain{})
+	beego.Router("/wallets", &WalletsController{})
 	beego.Run()
 }
