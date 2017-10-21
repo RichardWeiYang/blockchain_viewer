@@ -39,6 +39,7 @@ func (this *BlockController) Get() {
 		}
 
 		if len(block.PrevBlockHash) == 0 {
+			block = nil
 			break
 		}
 	}
