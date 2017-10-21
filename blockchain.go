@@ -8,9 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -369,13 +367,7 @@ func (bc *Blockchain) PrintHTML() string {
 	for {
 		block := bci.Next()
 
-		lines = append(lines, fmt.Sprintf("<h2>Block <a href=\"block/%x\">%x</a> </h2>", block.Hash, block.Hash))
-		lines = append(lines, fmt.Sprintf("Height: %d</br>", block.Height))
-		lines = append(lines, fmt.Sprintf("Prev. block: <a href=\"block/%x\">%x</a></br>", block.PrevBlockHash, block.PrevBlockHash))
-		lines = append(lines, fmt.Sprintf("Created at : %s</br>", time.Unix(block.Timestamp, 0)))
-		pow := NewProofOfWork(block)
-		lines = append(lines, fmt.Sprintf("PoW: %s</br></br>", strconv.FormatBool(pow.Validate())))
-		lines = append(lines, fmt.Sprintf("</br></br>"))
+		lines = append(lines, block.PrintHTML(false))
 
 		if len(block.PrevBlockHash) == 0 {
 			break

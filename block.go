@@ -3,7 +3,10 @@ package main
 import (
 	"bytes"
 	"encoding/gob"
+	"fmt"
 	"log"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -70,4 +73,16 @@ func DeserializeBlock(d []byte) *Block {
 	}
 
 	return &block
+}
+
+func (b *Block) PrintHTML(detail bool) string {
+	var lines []string
+	lines = append(lines, fmt.Sprintf("<h2>Block <a href=\"/block/%x\">%x</a> </h2>", b.Hash, b.Hash))
+	lines = append(lines, fmt.Sprintf("Height: %d</br>", b.Height))
+	lines = append(lines, fmt.Sprintf("Prev. block: <a href=\"/block/%x\">%x</a></br>", b.PrevBlockHash, b.PrevBlockHash))
+	lines = append(lines, fmt.Sprintf("Created at : %s</br>", time.Unix(b.Timestamp, 0)))
+	pow := NewProofOfWork(b)
+	lines = append(lines, fmt.Sprintf("PoW: %s</br></br>", strconv.FormatBool(pow.Validate())))
+	lines = append(lines, fmt.Sprintf("</br></br>"))
+	return strings.Join(lines, "\n")
 }
