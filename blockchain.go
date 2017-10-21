@@ -362,23 +362,20 @@ func dbExists(dbFile string) bool {
 	return true
 }
 
-func (bc *Blockchain) Print() string {
+func (bc *Blockchain) PrintHTML() string {
 	var lines []string
 	bci := bc.Iterator()
 
 	for {
 		block := bci.Next()
 
-		lines = append(lines, fmt.Sprintf("============ Block %x ============\n", block.Hash))
-		lines = append(lines, fmt.Sprintf("Height: %d\n", block.Height))
-		lines = append(lines, fmt.Sprintf("Prev. block: %x\n", block.PrevBlockHash))
-		lines = append(lines, fmt.Sprintf("Created at : %s\n", time.Unix(block.Timestamp, 0)))
+		lines = append(lines, fmt.Sprintf("<h2>Block <a href=\"block/%x\">%x</a> </h2>", block.Hash, block.Hash))
+		lines = append(lines, fmt.Sprintf("Height: %d</br>", block.Height))
+		lines = append(lines, fmt.Sprintf("Prev. block: <a href=\"block/%x\">%x</a></br>", block.PrevBlockHash, block.PrevBlockHash))
+		lines = append(lines, fmt.Sprintf("Created at : %s</br>", time.Unix(block.Timestamp, 0)))
 		pow := NewProofOfWork(block)
-		lines = append(lines, fmt.Sprintf("PoW: %s\n\n", strconv.FormatBool(pow.Validate())))
-		for _, tx := range block.Transactions {
-			lines = append(lines, fmt.Sprintf("%s", tx))
-		}
-		lines = append(lines, fmt.Sprintf("\n\n"))
+		lines = append(lines, fmt.Sprintf("PoW: %s</br></br>", strconv.FormatBool(pow.Validate())))
+		lines = append(lines, fmt.Sprintf("</br></br>"))
 
 		if len(block.PrevBlockHash) == 0 {
 			break
